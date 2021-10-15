@@ -1,6 +1,7 @@
-app: react-starter
-name: react-starter
+app: nameslol-frontend
+name: nameslol-frontend
 component: website
+org: bricefrisco
 
 inputs:
   src:
