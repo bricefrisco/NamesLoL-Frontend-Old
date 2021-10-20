@@ -2,11 +2,15 @@ import {createSlice} from "@reduxjs/toolkit";
 import {close} from './summonerSlice';
 
 export const Region = ['NA', 'EUNE', 'EUW', 'OCE', 'LAS']
+const defaultRegion = 'NA'
 
 const parseRegion = (cookie) => {
-    if (!cookie) return 'NA';
-    cookie = cookie.replace('region=', '')
-    return cookie;
+    const region = cookie
+        ?.split("; ")
+        ?.find(row => row.startsWith("region="))
+        ?.split("=")[1] ?? defaultRegion;
+
+    return region;
 }
 
 export const settingsSlice = createSlice({
