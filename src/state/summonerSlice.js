@@ -1,8 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { parseResponse } from "../utils/api";
+import { createSlice } from '@reduxjs/toolkit';
+import { parseResponse } from '../utils/api';
 
+/* eslint-disable no-param-reassign */
 export const summonerSlice = createSlice({
-  name: "summoner",
+  name: 'summoner',
   initialState: {
     summoner: undefined,
     loading: false,
@@ -34,9 +35,10 @@ export const summonerSlice = createSlice({
     },
     close: (state) => {
       state.open = false;
-    }
+    },
   },
 });
+/* eslint-enable no-param-reassign */
 
 export const { loading, loaded, errored, close } = summonerSlice.actions;
 
@@ -48,15 +50,18 @@ export const getOpen = (state) => state.summoner.open;
 
 export const fetchSummoner = () => (dispatch, getState) => {
   const name = getState().settings.nameInput;
-  const region = getState().settings.region;
-  const hideSearch = getState().settings.hideSearch;
+  const { region, hideSearch } = getState().settings;
 
   dispatch(loading());
 
-  const url = new URL(process.env.REACT_APP_BACKEND_URI + "/" + region.toLowerCase() + "/summoner/" + name.toLowerCase());
+  const url = new URL(
+    `${
+      process.env.REACT_APP_BACKEND_URI
+    }/${region.toLowerCase()}/summoner/${name.toLowerCase()}`,
+  );
 
   if (hideSearch) {
-    url.searchParams.append('hideSearch', 'true')
+    url.searchParams.append('hideSearch', 'true');
   }
 
   fetch(url.toString())
@@ -64,12 +69,14 @@ export const fetchSummoner = () => (dispatch, getState) => {
     .then((summoner) => dispatch(loaded(summoner)))
     .catch((err) => {
       if (err.toString().toLowerCase().includes('was not found')) {
-        dispatch(loaded({
-          name,
-          region
-        }))
+        dispatch(
+          loaded({
+            name,
+            region,
+          }),
+        );
       } else {
-        dispatch(errored(err.toString()))
+        dispatch(errored(err.toString()));
       }
     });
 };

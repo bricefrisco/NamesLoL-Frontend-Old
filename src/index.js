@@ -1,13 +1,15 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./app.css";
-import App from "./App";
-import store from "./state/store";
-import { Provider } from "react-redux";
+/* eslint-disable react/jsx-filename-extension */
+import React from 'react';
+import { Provider } from 'react-redux';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import store from './state/store';
+import './index.css';
 
-ReactDOM.render(
+const container = document.getElementById('app');
+const root = createRoot(container);
+root.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById("root")
 );

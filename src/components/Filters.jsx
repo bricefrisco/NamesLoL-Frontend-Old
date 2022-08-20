@@ -1,83 +1,98 @@
-import React, {useEffect} from "react";
-import {
-  Button,
-  Divider,
-  FormControl,
-  InputLabel,
-  makeStyles,
-  MenuItem,
-  Select,
-  Typography,
-} from "@material-ui/core";
-import {useDispatch} from "react-redux";
-import { setNameLength } from "../state/settingsSlice";
-import {useHistory} from "react-router-dom";
-import {navigate, useParams} from "../utils/api";
+import React, { useEffect } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
+import { css } from '@emotion/react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { setNameLength } from '../state/settingsSlice';
+import { navigate, useParams } from '../utils/api';
+import theme from '../styles/theme';
 
-const useStyles = makeStyles((theme) => ({
-  card: {
-    display: "inline-block",
-    color: theme.palette.text.secondary,
-    minWidth: 250,
-    backgroundColor: theme.palette.primary.main,
-    border: '1px solid rgba(145, 158, 171, 0.24)',
-    borderRadius: 5,
-    padding: theme.spacing(2),
-    marginTop: theme.spacing(6.66),
-    marginLeft: theme.spacing(2),
-    '@media (max-width: 850px)': {
-      marginBottom: theme.spacing(2),
-      marginTop: theme.spacing(2),
-      marginLeft: 0
-    },
-    '@media (max-width: 450px)': {
-      margin: 'auto',
-      marginBottom: theme.spacing(2)
-    }
-  },
-  title: {
-    fontWeight: 500,
-    fontSize: "0.9rem",
-    paddingBottom: theme.spacing(0.3),
-  },
-  control: {
-    marginTop: theme.spacing(2),
-    minWidth: "100%",
-  },
-  button: {
-    width: "100%",
-    marginTop: theme.spacing(2),
-  },
-  select: {
-      '&::before': {
-        borderColor: 'rgb(255, 255, 255, 0.2)!important',
-      },
-      color: theme.palette.text.secondary
+const cardStyles = css`
+  display: inline-block;
+  color: ${theme.textSecondary};
+  margin-left: 30px;
+  min-width: 250px;
+  max-width: 250px;
+  background-color: ${theme.primary};
+  border: 1px solid rgba(145, 158, 171, 0.24);
+  border-radius: 5px;
+  padding: 15px;
+  margin-top: 50px;
+
+  @media (max-width: 850px) {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 0px;
   }
-}));
 
-const menuItems = ["Any", 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+  @media (max-width: 450px) {
+    margin: auto;
+    margin-bottom: 10px;
+  }
+`;
+
+const titleStyles = css`
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding-bottom: 5px;
+`;
+
+const formStyles = css`
+  margin-top: 20px;
+  min-width: 100%;
+`;
+
+const inputLabelStyles = css`
+  margin-left: -15px;
+`;
+
+const selectStyles = css`
+  ::before {
+    border-color: rgb(255, 255, 255, 0.2) !important;
+  }
+
+  color: ${theme.textSecondary};
+`;
+
+const buttonStyles = css`
+  color: ${theme.textSecondary};
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.23);
+  margin-top: 15px;
+
+  :hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+`;
+
+const menuItems = ['Any', 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
 const Filters = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const params = useParams();
   const history = useHistory();
 
-  const [nl, setNL] = React.useState("Any");
+  const [nl, setNL] = React.useState('Any');
 
   const nameLength = params.get('nameLength');
 
   useEffect(() => {
     if (!nameLength && nl !== 'Any') {
-      setNL('Any')
-      return
+      setNL('Any');
+      return;
     }
 
     if (nameLength && nameLength !== nl) {
       setNL(nameLength);
     }
-  }, [nameLength])
+  }, [nameLength]);
 
   const apply = () => {
     navigate(history, params.get('time'), params.get('backwards'), nl);
@@ -85,17 +100,19 @@ const Filters = () => {
   };
 
   return (
-    <div className={classes.card}>
-      <Typography className={classes.title}>Filters</Typography>
+    <Box sx={cardStyles}>
+      <Typography sx={titleStyles}>Filters</Typography>
       <Divider />
-      <FormControl className={classes.control}>
-        <InputLabel id="filter-name-length-input">Name Length</InputLabel>
+      <FormControl sx={formStyles}>
+        <InputLabel id='filter-name-length-input' sx={inputLabelStyles}>
+          Name Length
+        </InputLabel>
         <Select
-          displayEmpty
-          labelId="filter-name-length-input"
+          labelId='filter-name-length-input'
           value={nl}
           onChange={(e) => setNL(e.target.value)}
-          className={classes.select}
+          sx={selectStyles}
+          variant='standard'
         >
           {menuItems.map((item) => (
             <MenuItem key={item} value={item}>
@@ -104,14 +121,10 @@ const Filters = () => {
           ))}
         </Select>
       </FormControl>
-      <Button
-        className={classes.button}
-        variant="outlined"
-        onClick={apply}
-      >
+      <Button sx={buttonStyles} onClick={apply}>
         Apply
       </Button>
-    </div>
+    </Box>
   );
 };
 
