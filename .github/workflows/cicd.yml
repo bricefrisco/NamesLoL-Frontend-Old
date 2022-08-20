@@ -14,20 +14,19 @@ jobs:
           aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           aws-region: us-east-1
 
-      - name: Install serverless
-        run: npm install -g @serverless/components
-
       - name: Install dependencies
         run: npm install
 
+      - name: Run linter
+        run: npm run lint
+
+      - name: Package
+        run: CI= npm run build
+
       - name: Deploy to dev
         if: endsWith(github.ref, '/dev')
-        run: components serverless deploy
-        env:
-          SERVERLESS_ACCESS_KEY: ${{secrets.SERVERLESS_ACCESS_KEY}}
+        run: aws s3 sync dist/ s3://${{secrets.TEST_S3_BUCKET}}
 
       - name: Deploy to prod
         if: endsWith(github.ref, '/master')
-        run: serverless deploy --stage prod
-        env:
-          SERVERLESS_ACCESS_KEY: ${{secrets.SERVERLESS_ACCESS_KEY}}
+        run: aws s3 sync dist/ s3://${{secrets.PROD_S3_BUCKET}}
