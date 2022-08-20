@@ -87,8 +87,10 @@ export const updateSummoner = (summoner) => (dispatch, getState) => {
     if (
       s.name.replace(/ /g, '').toLowerCase() !==
       summoner.name.replace(/ /g, '').toLowerCase()
-    )
+    ) {
       return s;
+    }
+
     return { ...summoner, name: s.name.toLowerCase() };
   });
   dispatch(loaded(updatedSummoners));

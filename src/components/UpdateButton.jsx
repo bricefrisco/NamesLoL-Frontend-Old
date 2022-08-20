@@ -1,29 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReplayIcon from '@material-ui/icons/Replay';
+import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import { css } from '@emotion/react';
+import { Replay, Check, Error } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import CheckIcon from '@material-ui/icons/Check';
-import ErrorIcon from '@material-ui/icons/Error';
-import { CircularProgress, IconButton, makeStyles } from '@material-ui/core';
 import { parseResponse } from '../utils/api';
 import { getLimit, getRegion, toggleLimit } from '../state/settingsSlice';
 import { updateSummoner } from '../state/summonersSlice';
+import theme from '../styles/theme';
 
-const useStyles = makeStyles((theme) => ({
-  updated: {
-    marginTop: theme.spacing(0.4),
-    marginRight: theme.spacing(0.5),
-  },
-  loading: {
-    color: theme.palette.text.secondary,
-    marginRight: theme.spacing(0.5),
-    marginTop: theme.spacing(0.4),
-  },
-}));
+const updatedStyles = css`
+  margin-top: 2px;
+  margin-right: 3px;
+`;
+
+const loadingStyles = css`
+  color: ${theme.textSecondary};
+  margin-right: 3px;
+  margin-top: 2px;
+`;
 
 const UpdateButton = ({ summonerName }) => {
   const dispatch = useDispatch();
-  const classes = useStyles();
   const limit = useSelector(getLimit);
   const region = useSelector(getRegion);
 
@@ -58,14 +57,21 @@ const UpdateButton = ({ summonerName }) => {
       });
   };
 
-  if (loading)
-    return <CircularProgress size={24} className={classes.loading} />;
-  if (success) return <CheckIcon className={classes.updated} />;
-  if (error) return <ErrorIcon />;
+  if (loading) {
+    return <CircularProgress size={24} sx={loadingStyles} />;
+  }
+
+  if (success) {
+    return <Check sx={updatedStyles} />;
+  }
+
+  if (error) {
+    return <Error />;
+  }
 
   return (
     <IconButton size='small' onClick={click} disabled={limit} color='inherit'>
-      <ReplayIcon />
+      <Replay />
     </IconButton>
   );
 };

@@ -1,6 +1,1 @@
-.cache
-.idea
-dist
-node_modules
-src/images
 *.css

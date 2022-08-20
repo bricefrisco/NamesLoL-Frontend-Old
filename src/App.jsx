@@ -5,13 +5,13 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import { createTheme, MuiThemeProvider } from '@material-ui/core';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NamesLoL from './components/NamesLoL';
 import Navigation from './components/Navigation';
 
 const theme = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: 'rgb(34,43,54)',
     },
@@ -25,7 +25,7 @@ const theme = createTheme({
 });
 
 const App = () => (
-  <MuiThemeProvider theme={theme}>
+  <ThemeProvider theme={theme}>
     <Router>
       <Switch>
         <Route exact path='/summoners'>
@@ -39,7 +39,7 @@ const App = () => (
         </Route>
       </Switch>
     </Router>
-  </MuiThemeProvider>
+  </ThemeProvider>
 );
 
 export default App;

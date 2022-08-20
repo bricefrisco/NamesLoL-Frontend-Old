@@ -1,15 +1,15 @@
 import React from 'react';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import { css } from '@emotion/react';
+import { Search } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  IconButton,
-  InputAdornment,
-  makeStyles,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import Checkbox from '@material-ui/core/Checkbox';
+import { fetchSummoner, getLoading } from '../state/summonerSlice';
 import {
   getLimit,
   getNameInput,
@@ -18,43 +18,48 @@ import {
   setName,
   toggleLimit,
 } from '../state/settingsSlice';
-import { fetchSummoner, getLoading } from '../state/summonerSlice';
+import theme from '../styles/theme';
 
-const useStyles = makeStyles((theme) => ({
+const inputStyles = css`
+  background-color: rgba(255, 255, 255, 0.02);
+  margin-top: 15px;
+
+  .MuiInputBase-root > input {
+    font-family: Ubuntu Mono;
+    margin-left: 5px;
+  }
+
+  div::before {
+    border-color: rgb(46, 50, 54) !important;
+    color: ${theme.textSecondary};
+  }
+
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
-    marginTop: theme.spacing(2),
-    fontFamily: 'Ubuntu Mono',
-    '& > div': {
-      '&::before': {
-        borderColor: 'rgb(46,50,54)!important',
-      },
-      color: theme.palette.text.secondary,
-    },
-    '& input': {
-      marginLeft: theme.spacing(1),
-    },
-  },
-  hideSearch: {
-    color: theme.palette.text.secondary,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  hideSearchText: {
-    fontSize: 11,
-    fontWeight: 500,
-    minWidth: 70,
-    marginRight: theme.spacing(-1.6),
-  },
-  searchIcon: {
-    color: theme.palette.text.secondary,
-  },
-}));
+    font-family: Ubuntu Mono !important;
+    margin-left: 5px;
+  }
+`;
+
+const hideSearchStyles = css`
+  color: ${theme.textSecondary};
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  p {
+    font-size: 11px;
+    font-weight: 500;
+    min-width: 70px;
+    margin-right: -10px;
+  }
+`;
+
+const searchIconStyles = css`
+  color: ${theme.textSecondary};
+`;
 
 const NameInput = () => {
   const dispatch = useDispatch();
-  const classes = useStyles();
   const summonerName = useSelector(getNameInput);
   const loading = useSelector(getLoading);
   const limit = useSelector(getLimit);
@@ -74,19 +79,18 @@ const NameInput = () => {
   return (
     <TextField
       variant='standard'
+      autoComplete='off'
       size='small'
       fullWidth
-      className={classes.input}
+      sx={inputStyles}
       placeholder='Summoner name'
       value={summonerName}
       onKeyDown={keypress}
       InputProps={{
         endAdornment: (
           <>
-            <div className={classes.hideSearch}>
-              <Typography className={classes.hideSearchText}>
-                Hide Search
-              </Typography>
+            <Box sx={hideSearchStyles}>
+              <Typography>Hide Search</Typography>
               <Tooltip title="Hide search (won't add summoner name to table)">
                 <Checkbox
                   size='small'
@@ -95,10 +99,10 @@ const NameInput = () => {
                   onChange={(e) => dispatch(setHideSearch(e.target.checked))}
                 />
               </Tooltip>
-            </div>
+            </Box>
             <InputAdornment position='end'>
               <IconButton size='small' onClick={click}>
-                <SearchIcon className={classes.searchIcon} />
+                <Search sx={searchIconStyles} />
               </IconButton>
             </InputAdornment>
           </>
