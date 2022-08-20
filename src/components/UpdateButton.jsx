@@ -1,24 +1,25 @@
-import React from "react";
-import ReplayIcon from "@material-ui/icons/Replay";
-import {CircularProgress, IconButton, makeStyles} from "@material-ui/core";
-import { parseResponse } from "../utils/api";
-import { getLimit, getRegion, toggleLimit } from "../state/settingsSlice";
-import { updateSummoner } from "../state/summonersSlice";
-import { useDispatch, useSelector } from "react-redux";
-import CheckIcon from "@material-ui/icons/Check";
-import ErrorIcon from "@material-ui/icons/Error";
+import React from 'react';
+import PropTypes from 'prop-types';
+import ReplayIcon from '@material-ui/icons/Replay';
+import { useDispatch, useSelector } from 'react-redux';
+import CheckIcon from '@material-ui/icons/Check';
+import ErrorIcon from '@material-ui/icons/Error';
+import { CircularProgress, IconButton, makeStyles } from '@material-ui/core';
+import { parseResponse } from '../utils/api';
+import { getLimit, getRegion, toggleLimit } from '../state/settingsSlice';
+import { updateSummoner } from '../state/summonersSlice';
 
 const useStyles = makeStyles((theme) => ({
   updated: {
     marginTop: theme.spacing(0.4),
-    marginRight: theme.spacing(0.5)
+    marginRight: theme.spacing(0.5),
   },
   loading: {
     color: theme.palette.text.secondary,
     marginRight: theme.spacing(0.5),
-    marginTop: theme.spacing(0.4)
-  }
-}))
+    marginTop: theme.spacing(0.4),
+  },
+}));
 
 const UpdateButton = ({ summonerName }) => {
   const dispatch = useDispatch();
@@ -33,13 +34,17 @@ const UpdateButton = ({ summonerName }) => {
   const click = () => {
     if (loading || limit) return;
 
-    dispatch(toggleLimit())
+    dispatch(toggleLimit());
 
     setError(undefined);
     setLoading(true);
     setSuccess(false);
 
-    fetch(`${process.env.REACT_APP_BACKEND_URI}/${region.toLowerCase()}/summoner/${summonerName.toLowerCase()}`)
+    fetch(
+      `${
+        process.env.REACT_APP_BACKEND_URI
+      }/${region.toLowerCase()}/summoner/${summonerName.toLowerCase()}`,
+    )
       .then(parseResponse)
       .then((summoner) => {
         dispatch(updateSummoner(summoner));
@@ -48,20 +53,25 @@ const UpdateButton = ({ summonerName }) => {
         setError(undefined);
       })
       .catch((err) => {
-        setLoading(false)
-        setError(err)
+        setLoading(false);
+        setError(err);
       });
   };
 
-  if (loading) return <CircularProgress size={24} className={classes.loading} />;
-  if (success) return <CheckIcon className={classes.updated}/>;
+  if (loading)
+    return <CircularProgress size={24} className={classes.loading} />;
+  if (success) return <CheckIcon className={classes.updated} />;
   if (error) return <ErrorIcon />;
 
   return (
-    <IconButton size="small" onClick={click} disabled={limit} color='inherit'>
+    <IconButton size='small' onClick={click} disabled={limit} color='inherit'>
       <ReplayIcon />
     </IconButton>
   );
+};
+
+UpdateButton.propTypes = {
+  summonerName: PropTypes.string.isRequired,
 };
 
 export default UpdateButton;

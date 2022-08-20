@@ -1,6 +1,14 @@
-import React from "react";
-import {Collapse, IconButton, LinearProgress, makeStyles, Typography} from "@material-ui/core";
-import Moment from "react-moment";
+import React from 'react';
+import {
+  Collapse,
+  IconButton,
+  LinearProgress,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+import Moment from 'react-moment';
+import { useDispatch, useSelector } from 'react-redux';
+import { Close } from '@material-ui/icons';
 import {
   getLoading,
   getOpen,
@@ -8,70 +16,67 @@ import {
   getSummoner,
   getError,
   getErrorMessage,
-  fetchSummoner
-} from "../state/summonerSlice";
-import {useDispatch, useSelector} from "react-redux";
-import {Close} from "@material-ui/icons";
+  fetchSummoner,
+} from '../state/summonerSlice';
+import Retry from './Retry';
 
 const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(2),
     borderRadius: 5,
     minHeight: 100,
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     '@media (max-width: 800px)': {
       padding: theme.spacing(3),
       flexDirection: 'column',
       '& > div, & > button': {
-        marginTop: theme.spacing(2)
-      }
-    }
+        marginTop: theme.spacing(2),
+      },
+    },
   },
   available: {
-    backgroundColor: "rgba(61,177,128, 0.5)",
-    color: "#fff"
+    backgroundColor: 'rgba(61,177,128, 0.5)',
+    color: '#fff',
   },
   unavailable: {
     backgroundColor: '#cd7b00',
     '& > button': {
-      color: 'black'
-    }
+      color: 'black',
+    },
   },
   name: {
-    textAlign: "center",
+    textAlign: 'center',
     fontWeight: 400,
     '@media (max-width: 800px)': {
       fontWeight: 500,
-      fontSize: 24
-    }
+      fontSize: 24,
+    },
   },
   status: {
-    textAlign: "center",
+    textAlign: 'center',
   },
   label: {
     marginBottom: theme.spacing(0.3),
     fontWeight: 500,
   },
   disclosure: {
-    display: "flex",
-    justifyContent: "flex-end",
+    display: 'flex',
+    justifyContent: 'flex-end',
     fontSize: 12,
-    color: "lightgray",
+    color: 'lightgray',
   },
   loading: {
     marginTop: theme.spacing(2),
-    backgroundColor: '#2e609c'
+    backgroundColor: '#2e609c',
   },
   close: {
-    '&::before': {
-
-    },
+    '&::before': {},
     '&::after': {
       content: '',
-      flex: '1 0 auto'
-    }
+      flex: '1 0 auto',
+    },
   },
   alert: {
     display: 'flex',
@@ -80,15 +85,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 5,
     backgroundColor: 'rgba(255,0,0,0.35)',
     color: 'white',
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   link: {
     color: 'rgb(0,135,246)',
     textDecoration: 'none',
     '&:hover': {
       textDecoration: 'underline',
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
 }));
 
@@ -107,20 +112,32 @@ const Summoner = () => {
 
   if (error) {
     return (
-        <Collapse in={open}>
-            <div className={`${classes.alert}`}>
-              <div>
-                Oh no! An error occurred: '{errorMessage}'<br />
-                Please <span className={classes.link} onClick={() => dispatch(fetchSummoner())}>try again.</span>{' '}
-                If the issue persists, please let us know{' '}
-                <a className={classes.link} target='_blank' rel='noreferrer noopener' href='https://github.com/bricefrisco/NamesLoL/issues'>here.</a>
-              </div>
-              <IconButton size='small' onClick={() => dispatch(close())}>
-                <Close />
-              </IconButton>
-            </div>
-        </Collapse>
-    )
+      <Collapse in={open}>
+        <div className={`${classes.alert}`}>
+          <div>
+            Oh no! An error occurred: &apos;{errorMessage}&apos;
+            <br />
+            Please{' '}
+            <Retry
+              text='try again.'
+              retryFunction={() => dispatch(fetchSummoner())}
+              className={classes.link}
+            />{' '}
+            If the issue persists, please let us know{' '}
+            <a
+              className={classes.link}
+              target='_blank'
+              rel='noreferrer noopener'
+              href='https://github.com/bricefrisco/NamesLoL/issues'>
+              here.
+            </a>
+          </div>
+          <IconButton size='small' onClick={() => dispatch(close())}>
+            <Close />
+          </IconButton>
+        </div>
+      </Collapse>
+    );
   }
 
   if (!summoner) return null;
@@ -132,20 +149,20 @@ const Summoner = () => {
   const getClassName = () => {
     if (nameAvailable) {
       return `${classes.card} ${classes.available}`;
-    } else {
-      return `${classes.card} ${classes.unavailable}`;
     }
+
+    return `${classes.card} ${classes.unavailable}`;
   };
 
   return (
     <Collapse in={open}>
       <div className={getClassName()}>
-        <Typography variant="h3" className={classes.name}>
+        <Typography variant='h3' className={classes.name}>
           {summoner.name}
         </Typography>
         <div className={classes.status}>
           <div className={classes.label}>Status</div>
-          <div>{nameAvailable ? "Available*" : "Unavailable"}</div>
+          <div>{nameAvailable ? 'Available*' : 'Unavailable'}</div>
         </div>
         {infoAvailable && (
           <>
@@ -153,12 +170,15 @@ const Summoner = () => {
               <div className={classes.label}>Availability Date</div>
               <Moment
                 date={new Date(summoner.availabilityDate)}
-                format="MM/DD/YYYY hh:mm:ss A"
+                format='MM/DD/YYYY hh:mm:ss A'
               />
             </div>
             <div className={classes.status}>
               <div className={classes.label}>Last Activity</div>
-                <Moment date={new Date(summoner.revisionDate)} format="MM/DD/YYYY hh:mm:ss A" />
+              <Moment
+                date={new Date(summoner.revisionDate)}
+                format='MM/DD/YYYY hh:mm:ss A'
+              />
             </div>
             <div className={classes.status}>
               <div className={classes.label}>Level</div>

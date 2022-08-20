@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from 'react';
 import {
   Button,
   Divider,
@@ -8,15 +8,15 @@ import {
   MenuItem,
   Select,
   Typography,
-} from "@material-ui/core";
-import {useDispatch} from "react-redux";
-import { setNameLength } from "../state/settingsSlice";
-import {useHistory} from "react-router-dom";
-import {navigate, useParams} from "../utils/api";
+} from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { setNameLength } from '../state/settingsSlice';
+import { navigate, useParams } from '../utils/api';
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    display: "inline-block",
+    display: 'inline-block',
     color: theme.palette.text.secondary,
     minWidth: 250,
     backgroundColor: theme.palette.primary.main,
@@ -28,35 +28,35 @@ const useStyles = makeStyles((theme) => ({
     '@media (max-width: 850px)': {
       marginBottom: theme.spacing(2),
       marginTop: theme.spacing(2),
-      marginLeft: 0
+      marginLeft: 0,
     },
     '@media (max-width: 450px)': {
       margin: 'auto',
-      marginBottom: theme.spacing(2)
-    }
+      marginBottom: theme.spacing(2),
+    },
   },
   title: {
     fontWeight: 500,
-    fontSize: "0.9rem",
+    fontSize: '0.9rem',
     paddingBottom: theme.spacing(0.3),
   },
   control: {
     marginTop: theme.spacing(2),
-    minWidth: "100%",
+    minWidth: '100%',
   },
   button: {
-    width: "100%",
+    width: '100%',
     marginTop: theme.spacing(2),
   },
   select: {
-      '&::before': {
-        borderColor: 'rgb(255, 255, 255, 0.2)!important',
-      },
-      color: theme.palette.text.secondary
-  }
+    '&::before': {
+      borderColor: 'rgb(255, 255, 255, 0.2)!important',
+    },
+    color: theme.palette.text.secondary,
+  },
 }));
 
-const menuItems = ["Any", 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+const menuItems = ['Any', 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
 const Filters = () => {
   const classes = useStyles();
@@ -64,20 +64,20 @@ const Filters = () => {
   const params = useParams();
   const history = useHistory();
 
-  const [nl, setNL] = React.useState("Any");
+  const [nl, setNL] = React.useState('Any');
 
   const nameLength = params.get('nameLength');
 
   useEffect(() => {
     if (!nameLength && nl !== 'Any') {
-      setNL('Any')
-      return
+      setNL('Any');
+      return;
     }
 
     if (nameLength && nameLength !== nl) {
       setNL(nameLength);
     }
-  }, [nameLength])
+  }, [nameLength]);
 
   const apply = () => {
     navigate(history, params.get('time'), params.get('backwards'), nl);
@@ -89,14 +89,13 @@ const Filters = () => {
       <Typography className={classes.title}>Filters</Typography>
       <Divider />
       <FormControl className={classes.control}>
-        <InputLabel id="filter-name-length-input">Name Length</InputLabel>
+        <InputLabel id='filter-name-length-input'>Name Length</InputLabel>
         <Select
           displayEmpty
-          labelId="filter-name-length-input"
+          labelId='filter-name-length-input'
           value={nl}
           onChange={(e) => setNL(e.target.value)}
-          className={classes.select}
-        >
+          className={classes.select}>
           {menuItems.map((item) => (
             <MenuItem key={item} value={item}>
               {item}
@@ -104,11 +103,7 @@ const Filters = () => {
           ))}
         </Select>
       </FormControl>
-      <Button
-        className={classes.button}
-        variant="outlined"
-        onClick={apply}
-      >
+      <Button className={classes.button} variant='outlined' onClick={apply}>
         Apply
       </Button>
     </div>
