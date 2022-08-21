@@ -33,18 +33,6 @@ By default, the `.env` file specifies the NamesLoL API. This is okay to do, as t
 If you are also running the [backend](https://github.com/bricefrisco/NamesLoL), then modify the `.env` file to point to your API gateway.  
 That's it! You can now develop and test locally.
 
-## Deployment
-
-For deployment, first you must create an [AWS account](https://aws.amazon.com/acocunt/sign-up)  
-Run `npm install -g serverless`, and `serverless login`.  
-Set up [IAM credentials](https://www.serverless.com/framework/docs/providers/aws/guide/credentials#:~:text=Follow%20these%20steps%20to%20create,Framework%2C%20like%20serverless%2Dadmin%20.)
-in AWS with admin access, then run `serverless config credentials`.
-
-To deploy to a development environment, run `serverless deploy`.  
-To deploy to production, run `serverless deploy --stage prod`.  
-That it! Keep an eye out in the console for the URL to the web app.  
-The URL can also be found in the [Serverless App](https://app.serverless.com)
-
 ## Disclaimers
 
 NamesLoL is **not** affiliated with Riot Games.  

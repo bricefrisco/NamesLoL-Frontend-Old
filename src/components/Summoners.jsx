@@ -1,36 +1,37 @@
 import React from 'react';
-import { makeStyles, Typography } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { useHistory } from 'react-router-dom';
+import { css } from '@emotion/react';
+import { navigate, useParams } from '../utils/api';
 import SummonersTable from './SummonersTable';
 import Filters from './Filters';
 import Pagination from './Pagination';
-import { navigate, useParams } from '../utils/api';
+import theme from '../styles/theme';
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    color: theme.palette.text.secondary,
-    fontSize: 24,
-    fontWeight: 400,
-    marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(3),
-    '@media (max-width: 600px)': {
-      fontSize: 24,
-    },
-  },
-  box: {
-    display: 'flex',
-    marginTop: theme.spacing(2),
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    '@media (max-width: 850px)': {
-      flexWrap: 'wrap',
-      flexDirection: 'column-reverse',
-    },
-  },
-  tableArea: {
-    width: '100%',
-  },
-}));
+const titleStyles = css`
+  color: ${theme.textSecondary};
+  font-size: 24px;
+  font-weight: 400;
+  margin-top: 20px;
+  margin-bottom: 15px;
+`;
+
+const containerStyles = css`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  align-items: flex-start;
+
+  @media (max-width: 850px) {
+    flex-wrap: wrap;
+    flex-direction: column-reverse;
+  }
+`;
+
+const tableStyles = css`
+  width: 100%;
+`;
 
 const timeIsValid = (time) => {
   if (time === undefined || time === null) return false;
@@ -49,7 +50,6 @@ const nameLengthIsValid = (nameLength) => {
 };
 
 const Summoners = () => {
-  const classes = useStyles();
   const params = useParams();
   const history = useHistory();
 
@@ -75,11 +75,11 @@ const Summoners = () => {
 
   return (
     <>
-      <Typography variant='h1' className={classes.title}>
+      <Typography variant='h1' sx={titleStyles}>
         Find upcoming and expired summoner names
       </Typography>
-      <div className={classes.box}>
-        <div className={classes.tableArea}>
+      <Box sx={containerStyles}>
+        <Box sx={tableStyles}>
           <Pagination showWhenLoading={false} />
           <SummonersTable
             timestamp={time}
@@ -87,9 +87,9 @@ const Summoners = () => {
             nameLength={nameLength ? parseInt(nameLength, 10) : null}
           />
           <Pagination />
-        </div>
+        </Box>
         <Filters />
-      </div>
+      </Box>
     </>
   );
 };

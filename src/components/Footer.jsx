@@ -1,86 +1,101 @@
 import React from 'react';
-import { Container, Divider, makeStyles, Typography } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+import { css } from '@emotion/react';
 import { useSelector } from 'react-redux';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import { GitHub } from '@mui/icons-material';
 import { getLoading } from '../state/summonersSlice';
+import theme from '../styles/theme';
 
-const useStyles = makeStyles((theme) => ({
-  footer: {
-    paddingTop: theme.spacing(1),
-  },
-  container: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-  },
-  disclaimer: {
-    color: theme.palette.text.secondary,
-    fontSize: 12,
-    maxWidth: 800,
-    textAlign: 'center',
-    margin: 'auto',
-  },
-  copyright: {
-    display: 'block',
-    marginBottom: theme.spacing(1),
-  },
-  flex: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  github: {
-    marginRight: theme.spacing(1),
-    color: 'rgb(66, 135, 245)',
-    cursor: 'pointer',
-  },
-  link: {
-    color: 'rgb(66, 135, 245)',
-    textDecoration: 'none',
-    '&:hover': {
-      textDecoration: 'underline',
-      cursor: 'pointer',
-    },
-  },
-}));
+const footerStyles = css`
+  padding-top: 5px;
+`;
+
+const containerStyles = css`
+  padding-top: 10px;
+  padding-bottom: 10px;
+`;
+
+const disclaimerStyles = css`
+  color: ${theme.textSecondary};
+  font-size: 12px;
+  max-width: 800px;
+  text-align: center;
+  margin: auto;
+`;
+
+const copyrightStyles = css`
+  display: block;
+  margin-bottom: 5px;
+`;
+
+const flexStyles = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const githubStyles = css`
+  margin-right: 5px;
+  color: rgb(66, 135, 245);
+  cursor: pointer;
+`;
+
+const linkStyles = css`
+  color: rgb(66, 135, 245);
+  text-decoration: none;
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
 
 const Footer = () => {
-  const classes = useStyles();
   const loading = useSelector(getLoading);
 
   if (loading) return null;
 
   return (
-    <div className={classes.footer}>
+    <Box sx={footerStyles}>
       <Divider />
-      <Container className={classes.container}>
-        <Typography className={classes.disclaimer} component='div'>
-          <span className={classes.copyright}>2021 © NamesLoL</span>
-          <div className={classes.flex}>
+      <Container sx={containerStyles}>
+        <Typography sx={disclaimerStyles} component='div'>
+          <Box component='span' sx={copyrightStyles}>
+            {new Date().getFullYear()} © NamesLoL
+          </Box>
+          <Box sx={flexStyles}>
             <a
               target='_blank'
               rel='noreferrer noopener'
-              href='https://github.com/bricefrisco/NamesLoL'>
-              <GitHubIcon className={classes.github} />
+              href='https://github.com/bricefrisco/NamesLoL'
+            >
+              <GitHub sx={githubStyles} />
             </a>
             <span>
               Open source. Like this project?{' '}
-              <a
+              <Box
+                component='a'
                 target='_blank'
                 rel='noreferrer noopener'
                 href='https://github.com/bricefrisco/NamesLoL'
-                className={classes.link}>
+                sx={linkStyles}
+              >
                 View the code
-              </a>{' '}
+              </Box>{' '}
               and give it a star! To report a bug or request a feature,{' '}
-              <a
+              <Box
+                component='a'
                 target='_blank'
                 rel='noreferrer noopener'
                 href='https://github.com/bricefrisco/NamesLoL/issues'
-                className={classes.link}>
+                sx={linkStyles}
+              >
                 open an issue.
-              </a>
+              </Box>
             </span>
-          </div>
+          </Box>
 
           <p>
             NamesLoL isn&apos;t endorsed by Riot Games and doesn&apos;t reflect
@@ -91,7 +106,7 @@ const Footer = () => {
           </p>
         </Typography>
       </Container>
-    </div>
+    </Box>
   );
 };
 

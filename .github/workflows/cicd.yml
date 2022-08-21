@@ -15,18 +15,18 @@ jobs:
           aws-region: us-east-1
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
-      - name: Run linter
+      - name: Lint
         run: npm run lint
 
       - name: Package
         run: CI= npm run build
 
-      - name: Deploy to dev
+      - name: Deploy - Development
         if: endsWith(github.ref, '/dev')
-        run: aws s3 sync dist/ s3://${{secrets.TEST_S3_BUCKET}}
+        run: aws s3 sync build/ s3://${{secrets.TEST_S3_BUCKET}}
 
-      - name: Deploy to prod
+      - name: Deploy - Production
         if: endsWith(github.ref, '/master')
-        run: aws s3 sync dist/ s3://${{secrets.PROD_S3_BUCKET}}
+        run: aws s3 sync build/ s3://${{secrets.PROD_S3_BUCKET}}

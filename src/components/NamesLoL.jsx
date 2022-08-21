@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from '@material-ui/core';
+import Container from '@mui/material/Container';
 import Summoner from './Summoner';
 import NameInput from './NameInput';
 import Summoners from './Summoners';

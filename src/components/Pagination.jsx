@@ -1,77 +1,64 @@
 import React from 'react';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
 import { PropTypes } from 'prop-types';
-import { IconButton, makeStyles } from '@material-ui/core';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { css } from '@emotion/react';
 import { useSelector } from 'react-redux';
-import MomentUtils from '@date-io/moment';
 import { useHistory } from 'react-router-dom';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import TodayIcon from '@material-ui/icons/Today';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import { getPagination, getLoading, getError } from '../state/summonersSlice';
 import { navigate, useParams } from '../utils/api';
+import theme from '../styles/theme';
 
-const useStyles = makeStyles((theme) => ({
-  pagination: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: theme.spacing(2),
-  },
-  time: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    color: 'rgb(3,169,244)',
-    fontWeight: 500,
-    fontSize: 14,
-    borderRadius: 25,
-  },
-  button: {
-    color: theme.palette.text.secondary,
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  dateInput: {
-    '&.MuiFormControl-root': {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-      paddingTop: theme.spacing(0.5),
-      paddingBottom: theme.spacing(0.5),
-      borderRadius: 25,
-      marginTop: 0,
-      marginBottom: 0,
-    },
-    '& > .MuiInput-root': {
-      fontSize: 14,
-      fontWeight: 500,
-      color: 'rgb(3, 169, 244)',
-      minWidth: '210px',
-    },
-    '& > .MuiInput-underline:before': {
-      borderBottom: 'none!important',
-    },
-    '& .MuiButtonBase-root.MuiIconButton-root': {
-      padding: theme.spacing(1),
-    },
-  },
-  dateIcon: {
-    '&.MuiSvgIcon-root': {
-      width: '1.3rem',
-      height: '1.3rem',
-      color: 'rgba(255, 255, 255, 0.85)',
-    },
-  },
-}));
+const paginationStyles = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+const buttonStyles = css`
+  color: ${theme.textSecondary};
+  margin-left: 5px;
+  margin-right: 5px;
+`;
+
+const dateStyles = css`
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+  padding: 5px 15px;
+  width: 140px;
+
+  div > input {
+    color: rgb(3, 169, 244) !important;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  div > div > button {
+    color: ${theme.textSecondary};
+  }
+
+  div > div > button > svg {
+    font-size: 1.5rem;
+  }
+
+  div::before {
+    border-bottom: none !important;
+  }
+
+  div::after {
+    border-bottom: none !important;
+  }
+`;
 
 const Pagination = ({ showWhenLoading }) => {
-  const classes = useStyles();
   const history = useHistory();
   const params = useParams();
 
@@ -89,51 +76,68 @@ const Pagination = ({ showWhenLoading }) => {
 
   const handleDateChange = (selectedDate) => {
     if (selectedDate == null) return;
-    selectedDate.set('hour', 0).set('minute', 0).set('seconds', 0);
-    navigate(
-      history,
-      selectedDate.toDate().valueOf(),
-      false,
-      params.get('nameLength'),
-    );
+    selectedDate.setHours(0);
+    selectedDate.setMinutes(0);
+    selectedDate.setSeconds(0);
+
+    navigate(history, selectedDate.getTime(), false, params.get('nameLength'));
   };
 
   if (loading && !showWhenLoading) return null;
   if (error) return null;
   if (!pagination.backwards) return null;
 
+  const today = new Date();
+
   return (
-    <div className={classes.pagination}>
+    <Box sx={paginationStyles}>
       <IconButton
         size='small'
-        className={classes.button}
+        sx={buttonStyles}
         onClick={goBackwards}
-        disabled={loading}>
-        <KeyboardArrowLeftIcon />
+        disabled={loading}
+      >
+        <KeyboardArrowLeft />
       </IconButton>
 
-      <MuiPickersUtilsProvider utils={MomentUtils}>
-        <KeyboardDatePicker
-          inputProps={{ readOnly: true }}
-          className={classes.dateInput}
-          disableToolbar
-          variant='inline'
-          format='MM/DD/YYYY, hh:mm:ss A'
-          margin='normal'
-          value={new Date(pagination.backwards)}
-          onChange={(e) => handleDateChange(e)}
-          keyboardIcon={<TodayIcon className={classes.dateIcon} />}
-        />
-      </MuiPickersUtilsProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Stack spacing={3}>
+          <DesktopDatePicker
+            variant='inline'
+            inputFormat='MM/dd/yyyy'
+            inputProps={{ readOnly: true }}
+            minDate={
+              new Date(
+                today.getFullYear() - 2,
+                today.getMonth(),
+                today.getDate(),
+              )
+            }
+            maxDate={
+              new Date(
+                today.getFullYear() + 1,
+                today.getMonth(),
+                today.getDate(),
+              )
+            }
+            value={new Date(pagination.backwards)}
+            onChange={(e) => handleDateChange(e)}
+            renderInput={(props) => (
+              <TextField {...props} sx={dateStyles} variant='standard' />
+            )}
+          />
+        </Stack>
+      </LocalizationProvider>
 
       <IconButton
         size='small'
-        className={classes.button}
+        sx={buttonStyles}
         onClick={goForwards}
-        disabled={loading}>
-        <KeyboardArrowRightIcon />
+        disabled={loading}
+      >
+        <KeyboardArrowRight />
       </IconButton>
-    </div>
+    </Box>
   );
 };
 
